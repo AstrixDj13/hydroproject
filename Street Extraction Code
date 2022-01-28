@@ -1,1 +1,32 @@
+import numpy as np
+import math
+nodalmatrix = []  # A matrix that stores the coordinates of the two points
+# For user input
+for i in range(2):  # A for loop for the number of nodes
+    print("Enter the coordinates of node ", i+1)
+    coordinate = []
+    for j in range(2):  # A for loop for the coordinates of each node
+        coordinate.append(int(input()))
+    nodalmatrix.append(coordinate)
+
+for i in range(2):
+    for j in range(2):
+        print(nodalmatrix[i][j], end = " ")
+    print()
+delta_x = nodalmatrix[0][0] - nodalmatrix[1][0]
+delta_y = nodalmatrix[0][1] - nodalmatrix[1][1]
+theta = math.atan(delta_y/delta_x)
+x1 = nodalmatrix[0][0] + (5 * math.sin(theta))
+y1 = nodalmatrix[0][1] - (5 * math.cos(theta))
+x2 = nodalmatrix[0][0] - (5 * math.sin(theta))
+y2 = nodalmatrix[0][1] + (5 * math.cos(theta))
+x3 = nodalmatrix[1][0] + (5 * math.sin(theta))
+y3 = nodalmatrix[1][1] - (5 * math.cos(theta))
+x4 = nodalmatrix[1][0] - (5 * math.sin(theta))
+y4 = nodalmatrix[1][1] + (5 * math.cos(theta))
+print("The bounding coordinates are:  ")
+print(x1, ",", y1)
+print(x2, ",", y2)
+print(x3, ",", y3)
+print(x4, ",", y4)
 
