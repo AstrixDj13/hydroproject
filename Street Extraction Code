@@ -1,6 +1,21 @@
 import numpy as np
+from stl import mesh
 import math
 nodalmatrix = []  # A matrix that stores the coordinates of the two points
+your_mesh = mesh.Mesh.from_file('body.stl')
+
+cogs = np.zeros((your_mesh.data.size, 5)) #This section converts every triangle in a point (Center of gravity)
+for i in range(0, your_mesh.data.size): #i refers to the rows of the array cog
+    for j in range(0, 4):  # i refers to the columns of the array cog
+        if j == 0:  #j=1 always refers to the calculation of the x cog coordinate for the triangle i
+           cogs[i,j]=(your_mesh.x[i,0] + your_mesh.x[i,1] + your_mesh.x[i,2])/3
+        elif j == 1:
+           cogs[i,j] = (your_mesh.y[i,0] + your_mesh.y[i,1] + your_mesh.y[i,2])/3
+        elif j == 2:
+           cogs[i,j] = (your_mesh.z[i,0] + your_mesh.z[i,1] + your_mesh.z[i,2])/3
+        elif j == 3:
+           cogs[i,j] = i #This column stores the triangle ID
+
 # For user input
 for i in range(2):  # A for loop for the number of nodes
     print("Enter the coordinates of node ", i+1)
@@ -9,10 +24,7 @@ for i in range(2):  # A for loop for the number of nodes
         coordinate.append(int(input()))
     nodalmatrix.append(coordinate)
 
-for i in range(2):
-    for j in range(2):
-        print(nodalmatrix[i][j], end = " ")
-    print()
+
 delta_x = nodalmatrix[0][0] - nodalmatrix[1][0]
 delta_y = nodalmatrix[0][1] - nodalmatrix[1][1]
 theta = math.atan(delta_y/delta_x)
@@ -30,22 +42,33 @@ print(x2, ",", y2)
 print(x3, ",", y3)
 print(x4, ",", y4)
 # Determination of whether the triangle centroid is inside or outside
-trianglecoordinate = []
-print("Enter the triangle centroid ")
-for i in range(2):
-    trianglecoordinate.append(int(input()))
-Mat1 = np.array([[x1, y1, 1], [x2, y2, 1], [trianglecoordinate[0], trianglecoordinate[1], 1]])
-Mat2 = np.array([[x2, y2, 1], [x3, y3, 1], [trianglecoordinate[0], trianglecoordinate[1], 1]])
-Mat3 = np.array([[x3, y3, 1], [x4, y4, 1], [trianglecoordinate[0], trianglecoordinate[1], 1]])
-Mat4 = np.array([[x4, y4, 1], [x1, y1, 1], [trianglecoordinate[0], trianglecoordinate[1], 1]])
-A1 = 0.5*np.linalg.det(Mat1)
-A2 = 0.5*np.linalg.det(Mat2)
-A3 = 0.5*np.linalg.det(Mat3)
-A4 = 0.5*np.linalg.det(Mat4)
-A = 10*math.sqrt(math.pow(delta_x,2) + math.pow(delta_y,2))
-Atot = A1 + A2 + A3 + A4
-if Atot = A:
-    print("The Triangle is inside")
-else
-    print("The triangle is outside")
-  
+trianglecoordinate = np.zeros((1, 2))
+
+print("ID of the triangles inside this street:  ")
+counter=0
+for i in range(0, your_mesh.data.size):
+     trianglecoordinate[0,0] = cogs[i,0]
+     trianglecoordinate[0,1] = cogs[i,1]
+
+     Mat1 = np.array([[x1, y1, 1], [x2, y2, 1], [trianglecoordinate[0,0], trianglecoordinate[0,1], 1]])
+     Mat2 = np.array([[x1, y1, 1], [x3, y3, 1], [trianglecoordinate[0, 0], trianglecoordinate[0, 1], 1]])
+     Mat3 = np.array([[x3, y3, 1], [x4, y4, 1], [trianglecoordinate[0, 0], trianglecoordinate[0, 1], 1]])
+     Mat4 = np.array([[x2, y2, 1], [x4, y4, 1], [trianglecoordinate[0, 0], trianglecoordinate[0, 1], 1]])
+     A1 = abs(0.5 * np.linalg.det(Mat1))
+     A2 = abs(0.5 * np.linalg.det(Mat2))
+     A3 = abs(0.5 * np.linalg.det(Mat3))
+     A4 = abs(0.5 * np.linalg.det(Mat4))
+     A = 10 * math.sqrt(math.pow(delta_x, 2) + math.pow(delta_y, 2))
+     Atot = A1 + A2 + A3 + A4
+
+
+     if Atot > A*0.999999 and Atot < A*1.000001:
+          cogs[i, 4] = 1  # 1 means that the triangle is inside
+          print(cogs[i, 3]) #Show the ID of the triangles inside
+          counter=counter+1
+     else:
+         cogs[i, 4] = 0  # 0 means that the triangle is outside
+
+print("Number of triangles inside:  ")
+print(counter)
+a=1
