@@ -31,7 +31,7 @@ for i in range(0, your_mesh.data.size): #i refers to the rows of the array cog
            cogs[i,j] = i #This column stores the triangle ID
 #print(cogs)
 k = 0
-
+streettriangle =[]
 for i in range(2125):
 
     if file.shapeid[i] == grid_list[k] and file.shapeid[i+1] == grid_list[k]:
@@ -67,7 +67,7 @@ for i in range(2125):
 
         '''print("ID of the triangles inside this street:  ")
         counter=0'''
-        streettriangle =[]
+        
         for j in range(0, your_mesh.data.size):
             trianglecoordinate[0,0] = cogs[j,0]
             trianglecoordinate[0,1] = cogs[j,1]
@@ -101,6 +101,7 @@ for i in range(2125):
         generate_street = mesh.Mesh(generate)
         print("Street ",k)
         generate_street.save('Street.stl')
+        streettriangle =[]
         if k<(grid_list.ndarray.size-1):
             k=k+1
         else:
