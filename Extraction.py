@@ -90,7 +90,7 @@ for i in range(2125):     #loop which runs through all the the points in the csv
 
     elif file.shapeid[i] < grid_list[k]:
         continue
-#Generates all stl streets and empties the streettriangle matrix for the next iteration (shape-id)
+#The section below generates all stl streets and empties the streettriangle matrix for the next iteration (shape-id)
     else:
         rows = len(streettriangle)
         generate = np.zeros(rows, dtype=mesh.Mesh.dtype)
